@@ -1,0 +1,311 @@
+{
+  "experiment": "phase1_train",
+  "config": {
+    "whisper_size": "tiny",
+    "max_epochs": 10,
+    "batch_size": 16,
+    "lr": 0.001,
+    "gap_augmentation": true
+  },
+  "device": "mps",
+  "training": [
+    {
+      "variant": "A",
+      "training": null,
+      "trainable_params": 0
+    },
+    {
+      "variant": "B",
+      "training": {
+        "train_loss": [
+          2.7442781245908257,
+          2.7564128271028316,
+          2.7231496299445297,
+          2.77398121157172,
+          2.732106311361217,
+          2.7563694708840143,
+          2.7469079081572634,
+          2.762221277759062,
+          2.7631301733368603,
+          2.742735500442249
+        ],
+        "time_minutes": 34.86077166795731
+      },
+      "trainable_params": 4
+    },
+    {
+      "variant": "C",
+      "training": {
+        "train_loss": [
+          2.7525848636414088,
+          2.7470600751525196,
+          2.5803182857662605,
+          2.4602125150531364,
+          2.4243520964457335,
+          2.3902454609311494,
+          2.3236652759200367,
+          2.2929400365445867,
+          2.277719873955796,
+          2.3002690283279845
+        ],
+        "time_minutes": 34.58745330174764
+      },
+      "trainable_params": 3076
+    },
+    {
+      "variant": "D",
+      "training": {
+        "train_loss": [
+          2.73109390082972,
+          2.5590886483645305,
+          2.253643498074409,
+          1.9450003568020613,
+          1.8608696360827823,
+          1.832652145923849,
+          1.7687391702023298,
+          1.741576331287789,
+          1.7227822269141342,
+          1.7082647298301399
+        ],
+        "time_minutes": 36.71251204411189
+      },
+      "trainable_params": 594436
+    }
+  ],
+  "evaluations": [
+    {
+      "variant": "A",
+      "gap_evaluation": {
+        "gap_0": {
+          "wer": 0.07595772787318363,
+          "cer": 0.02980021733678843,
+          "num_samples": 200
+        },
+        "gap_5": {
+          "wer": 0.0959929546455306,
+          "cer": 0.048023071136002675,
+          "num_samples": 200
+        },
+        "gap_15": {
+          "wer": 0.1265962131219727,
+          "cer": 0.07882638134247262,
+          "num_samples": 200
+        },
+        "gap_30": {
+          "wer": 0.19110523998238663,
+          "cer": 0.14686951433586892,
+          "num_samples": 200
+        },
+        "multi_gap": {
+          "wer": 0.24482606781153676,
+          "cer": 0.1976928863997325,
+          "num_samples": 200
+        }
+      },
+      "hallucination": {
+        "silence": {
+          "hallucination_rate": 1.0,
+          "avg_output_length": 1.0,
+          "num_samples": 20
+        },
+        "white_noise": {
+          "hallucination_rate": 1.0,
+          "avg_output_length": 1.0,
+          "num_samples": 20
+        }
+      },
+      "pulse_stats": []
+    },
+    {
+      "variant": "B",
+      "gap_evaluation": {
+        "gap_0": {
+          "wer": 0.07595772787318363,
+          "cer": 0.02980021733678843,
+          "num_samples": 200
+        },
+        "gap_5": {
+          "wer": 0.0959929546455306,
+          "cer": 0.048023071136002675,
+          "num_samples": 200
+        },
+        "gap_15": {
+          "wer": 0.1265962131219727,
+          "cer": 0.07882638134247262,
+          "num_samples": 200
+        },
+        "gap_30": {
+          "wer": 0.19110523998238663,
+          "cer": 0.14686951433586892,
+          "num_samples": 200
+        },
+        "multi_gap": {
+          "wer": 0.24482606781153676,
+          "cer": 0.1976928863997325,
+          "num_samples": 200
+        }
+      },
+      "hallucination": {
+        "silence": {
+          "hallucination_rate": 1.0,
+          "avg_output_length": 1.0,
+          "num_samples": 20
+        },
+        "white_noise": {
+          "hallucination_rate": 1.0,
+          "avg_output_length": 1.0,
+          "num_samples": 20
+        }
+      },
+      "pulse_stats": []
+    },
+    {
+      "variant": "C",
+      "gap_evaluation": {
+        "gap_0": {
+          "wer": 0.09423161602818142,
+          "cer": 0.04125219426565243,
+          "num_samples": 200
+        },
+        "gap_5": {
+          "wer": 0.15059445178335534,
+          "cer": 0.08421800551701078,
+          "num_samples": 200
+        },
+        "gap_15": {
+          "wer": 0.14288859533245266,
+          "cer": 0.08981860737273259,
+          "num_samples": 200
+        },
+        "gap_30": {
+          "wer": 0.2051959489211801,
+          "cer": 0.15384936888740283,
+          "num_samples": 200
+        },
+        "multi_gap": {
+          "wer": 0.38837516512549536,
+          "cer": 0.3027668644988715,
+          "num_samples": 200
+        }
+      },
+      "hallucination": {
+        "silence": {
+          "hallucination_rate": 1.0,
+          "avg_output_length": 1.0,
+          "num_samples": 20
+        },
+        "white_noise": {
+          "hallucination_rate": 1.0,
+          "avg_output_length": 1.0,
+          "num_samples": 20
+        }
+      },
+      "pulse_stats": [
+        {
+          "layer": 0,
+          "alpha": 0.3706497550010681,
+          "amp_mean": -0.005951365921646357,
+          "omega_mean": 2.150474786758423,
+          "omega_std": 2.5097219944000244
+        },
+        {
+          "layer": 1,
+          "alpha": 0.4459141194820404,
+          "amp_mean": -0.016978519037365913,
+          "omega_mean": 2.1500422954559326,
+          "omega_std": 2.5069687366485596
+        },
+        {
+          "layer": 2,
+          "alpha": 0.4820389747619629,
+          "amp_mean": -0.008066096343100071,
+          "omega_mean": 2.1519644260406494,
+          "omega_std": 2.508878469467163
+        },
+        {
+          "layer": 3,
+          "alpha": 0.6933141946792603,
+          "amp_mean": -0.027820924296975136,
+          "omega_mean": 2.1544227600097656,
+          "omega_std": 2.5118191242218018
+        }
+      ]
+    },
+    {
+      "variant": "D",
+      "gap_evaluation": {
+        "gap_0": {
+          "wer": 1.3615147512109202,
+          "cer": 0.9099724149460837,
+          "num_samples": 200
+        },
+        "gap_5": {
+          "wer": 1.3786878027300749,
+          "cer": 0.9225110758171028,
+          "num_samples": 200
+        },
+        "gap_15": {
+          "wer": 1.3370761778952003,
+          "cer": 0.9320822536153139,
+          "num_samples": 200
+        },
+        "gap_30": {
+          "wer": 1.690885072655218,
+          "cer": 1.1872022068043133,
+          "num_samples": 200
+        },
+        "multi_gap": {
+          "wer": 1.1831792162043153,
+          "cer": 0.8130485664131071,
+          "num_samples": 200
+        }
+      },
+      "hallucination": {
+        "silence": {
+          "hallucination_rate": 1.0,
+          "avg_output_length": 1.0,
+          "num_samples": 20
+        },
+        "white_noise": {
+          "hallucination_rate": 1.0,
+          "avg_output_length": 1.35,
+          "num_samples": 20
+        }
+      },
+      "pulse_stats": [
+        {
+          "layer": 0,
+          "alpha": 0.27771562337875366,
+          "amp_mean": 0.00500400410965085,
+          "omega_mean": 2.1477138996124268,
+          "omega_std": 2.502441167831421
+        },
+        {
+          "layer": 1,
+          "alpha": 0.3127506971359253,
+          "amp_mean": 0.008946342393755913,
+          "omega_mean": 2.14941143989563,
+          "omega_std": 2.5044949054718018
+        },
+        {
+          "layer": 2,
+          "alpha": 0.39721933007240295,
+          "amp_mean": -0.04048607870936394,
+          "omega_mean": 2.1485021114349365,
+          "omega_std": 2.5043251514434814
+        },
+        {
+          "layer": 3,
+          "alpha": 0.5775551199913025,
+          "amp_mean": -0.03590518236160278,
+          "omega_mean": 2.1519529819488525,
+          "omega_std": 2.5104191303253174
+        }
+      ]
+    }
+  ],
+  "decision": {
+    "go": false,
+    "reason": "NO-GO: Pulse does not beat baseline on multi-gap WER. Consider Whisper-Small or different approach."
+  }
+}

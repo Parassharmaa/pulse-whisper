@@ -15,6 +15,9 @@ training:
   fp16: true
   seed: 42
 
+logging:
+  log_every_n_steps: 10
+
 eval:
   gap_levels: [0, 5, 15, 30, multi]
   test_set: test-clean
