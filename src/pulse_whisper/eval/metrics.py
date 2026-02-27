@@ -9,6 +9,14 @@ from dataclasses import dataclass, field
 
 import jiwer
 
+# Standard Whisper text normalization: lowercase, strip whitespace
+_NORMALIZE = jiwer.Compose([
+    jiwer.ToLowerCase(),
+    jiwer.RemoveMultipleSpaces(),
+    jiwer.Strip(),
+    jiwer.RemovePunctuation(),
+])
+
 
 @dataclass
 class EvalResult:
@@ -32,26 +40,25 @@ class HallucinationResult:
 
 
 def compute_wer(predictions: list[str], references: list[str]) -> float:
-    """Compute Word Error Rate."""
+    """Compute Word Error Rate with text normalization."""
     if not references:
         return 0.0
-    # Filter out empty references (can't compute WER on empty strings)
     filtered = [(p, r) for p, r in zip(predictions, references) if r.strip()]
     if not filtered:
         return 0.0
     preds, refs = zip(*filtered)
-    return jiwer.wer(list(refs), list(preds))
+    return jiwer.wer(list(refs), list(preds), reference_transform=_NORMALIZE, hypothesis_transform=_NORMALIZE)
 
 
 def compute_cer(predictions: list[str], references: list[str]) -> float:
-    """Compute Character Error Rate."""
+    """Compute Character Error Rate with text normalization."""
     if not references:
         return 0.0
     filtered = [(p, r) for p, r in zip(predictions, references) if r.strip()]
     if not filtered:
         return 0.0
     preds, refs = zip(*filtered)
-    return jiwer.cer(list(refs), list(preds))
+    return jiwer.cer(list(refs), list(preds), reference_transform=_NORMALIZE, hypothesis_transform=_NORMALIZE)
 
 
 def compute_hallucination_rate(outputs: list[str], min_tokens: int = 1) -> float:

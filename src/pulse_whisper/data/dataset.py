@@ -119,7 +119,7 @@ def get_dataloader(
         shuffle=shuffle,
         num_workers=num_workers,
         collate_fn=collate_fn,
-        pin_memory=True,
+        pin_memory=torch.cuda.is_available(),
     )
 
 

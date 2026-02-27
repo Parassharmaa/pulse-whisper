@@ -18,6 +18,8 @@ dependencies = [
     "tensorboard>=2.13",
     "accelerate>=0.25",
     "pyyaml>=6.0",
+    "torchcodec>=0.1",
+    "soundfile>=0.12",
 ]
 
 [project.optional-dependencies]

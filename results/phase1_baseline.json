@@ -1,0 +1,58 @@
+{
+  "experiment": "phase1_baseline",
+  "whisper_size": "tiny",
+  "device": "cpu",
+  "gap_evaluation": {
+    "gap_0": {
+      "wer": 0.9841269841269841,
+      "cer": 0.827485380116959,
+      "num_samples": 20
+    },
+    "gap_5": {
+      "wer": 0.9841269841269841,
+      "cer": 0.8304093567251462,
+      "num_samples": 20
+    },
+    "gap_15": {
+      "wer": 0.9841269841269841,
+      "cer": 0.8358395989974937,
+      "num_samples": 20
+    },
+    "gap_30": {
+      "wer": 0.981859410430839,
+      "cer": 0.8467000835421888,
+      "num_samples": 20
+    },
+    "multi_gap": {
+      "wer": 0.981859410430839,
+      "cer": 0.8429406850459482,
+      "num_samples": 20
+    }
+  },
+  "hallucination": {
+    "silence": {
+      "hallucination_rate": 1.0,
+      "avg_output_length": 1.0,
+      "num_samples": 5,
+      "sample_outputs": [
+        " you",
+        " you",
+        " you",
+        " you",
+        " you"
+      ]
+    },
+    "white_noise": {
+      "hallucination_rate": 1.0,
+      "avg_output_length": 1.0,
+      "num_samples": 5,
+      "sample_outputs": [
+        " you",
+        " you",
+        " you",
+        " you",
+        " you"
+      ]
+    }
+  }
+}
