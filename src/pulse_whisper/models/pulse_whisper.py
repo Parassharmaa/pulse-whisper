@@ -105,7 +105,7 @@ class PulseWhisperEncoder(nn.Module):
 
         # Run through encoder layers with pulse injection
         for i, layer in enumerate(encoder.layers):
-            hidden_states = layer(hidden_states)[0]
+            hidden_states = layer(hidden_states, attention_mask=None)[0]
 
             if self.variant != Variant.A and i < len(self.injected_layers):
                 hidden_states = self.injected_layers[i](hidden_states, time_steps)
