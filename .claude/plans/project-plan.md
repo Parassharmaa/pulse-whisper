@@ -74,19 +74,28 @@
   - pulse_phase: ±0.001 WER across all gap levels
 - Confirms pulse needs training to have effect
 
-### Task 8: Phase 1.3 — Train pulse on Whisper-Tiny (Go/No-Go)
+### Task 8: Phase 1.3 — Train pulse on Whisper-Tiny (Go/No-Go) ✅ NO-GO → PIVOT
+- **Script:** `scripts/run_phase1_train.py`
 - **Blocked by:** Tasks 5, 7
 - Train on 10h LibriSpeech with gap augmentation
 - 4 variants × 1 seed: A (Baseline), B (+Noise), C (+Pulse), D (+Pulse+Phase)
-- **GO:** Pulse beats Baseline AND Noise on multi-gap WER
-- **PIVOT:** Pulse ≈ Baseline → try Small model or different insertion
-- ~1-2 hrs compute
+- **Results (unconstrained, lr=1e-3):**
+  - Training loss: B=2.73 flat, C=2.75→2.27, D=2.75→1.71
+  - But WER *increased*: C multi_gap=0.388 (vs A=0.245), D=1.183 (catastrophic)
+  - Alpha grew to 0.28-0.58 — pulse too strong, destroyed encoder representations
+- **Phase 1.3b (constrained, alpha_max=0.05, lr=1e-4):**
+  - C: multi_gap=0.249 (no improvement vs 0.245)
+  - D: multi_gap=0.242 (marginal 1% improvement)
+  - Clean WER preserved at 0.076-0.077
+- **DECISION: PIVOT** — need medium constraint (alpha_max=0.1) or Whisper-Small
 
-### Task 9: Phase 1.4 — Hallucination-specific testing
+### Task 9: Phase 1.4 — Hallucination-specific testing ✅
+- **Script:** `scripts/run_phase1_hallucination.py`
 - **Blocked by:** Task 8
-- Pure silence (30s), white noise, speech with long pauses
-- **This is the killer metric** — hallucination rate reduction = paper
-- ~30 min
+- **Results:**
+  - All variants: 100% hallucination on silence and white noise
+  - D (unconstrained): 83% on speech-with-pauses (slight reduction)
+  - Pulse did not reduce hallucination in current form
 
 ## Phase 2: Full Experiment (Conditional on GO)
 - Scale to Whisper-Small (12 encoder layers, 244M params)
