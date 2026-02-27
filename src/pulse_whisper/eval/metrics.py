@@ -9,12 +9,22 @@ from dataclasses import dataclass, field
 
 import jiwer
 
-# Standard Whisper text normalization: lowercase, strip whitespace
-_NORMALIZE = jiwer.Compose([
+# Text normalization for WER (word-level)
+_NORMALIZE_WER = jiwer.Compose([
     jiwer.ToLowerCase(),
     jiwer.RemoveMultipleSpaces(),
     jiwer.Strip(),
     jiwer.RemovePunctuation(),
+    jiwer.ReduceToListOfListOfWords(),
+])
+
+# Text normalization for CER (char-level)
+_NORMALIZE_CER = jiwer.Compose([
+    jiwer.ToLowerCase(),
+    jiwer.RemoveMultipleSpaces(),
+    jiwer.Strip(),
+    jiwer.RemovePunctuation(),
+    jiwer.ReduceToListOfListOfChars(),
 ])
 
 
@@ -47,7 +57,7 @@ def compute_wer(predictions: list[str], references: list[str]) -> float:
     if not filtered:
         return 0.0
     preds, refs = zip(*filtered)
-    return jiwer.wer(list(refs), list(preds), reference_transform=_NORMALIZE, hypothesis_transform=_NORMALIZE)
+    return jiwer.wer(list(refs), list(preds), reference_transform=_NORMALIZE_WER, hypothesis_transform=_NORMALIZE_WER)
 
 
 def compute_cer(predictions: list[str], references: list[str]) -> float:
@@ -58,7 +68,7 @@ def compute_cer(predictions: list[str], references: list[str]) -> float:
     if not filtered:
         return 0.0
     preds, refs = zip(*filtered)
-    return jiwer.cer(list(refs), list(preds), reference_transform=_NORMALIZE, hypothesis_transform=_NORMALIZE)
+    return jiwer.cer(list(refs), list(preds), reference_transform=_NORMALIZE_CER, hypothesis_transform=_NORMALIZE_CER)
 
 
 def compute_hallucination_rate(outputs: list[str], min_tokens: int = 1) -> float:

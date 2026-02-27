@@ -6,9 +6,15 @@ Core evaluation pipeline for measuring Whisper robustness to silence gaps.
 from __future__ import annotations
 
 import logging
+import warnings
 
 import torch
 from transformers import WhisperProcessor
+
+# Suppress noisy HF generation warnings
+warnings.filterwarnings("ignore", message=".*max_new_tokens.*max_length.*")
+warnings.filterwarnings("ignore", message=".*attention mask.*")
+warnings.filterwarnings("ignore", message=".*forced_decoder_ids.*deprecated.*")
 
 from pulse_whisper.data.gapped_audio import GapLevel, inject_silence_gaps
 from pulse_whisper.eval.metrics import (
