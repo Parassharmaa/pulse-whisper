@@ -18,6 +18,7 @@ Built on the pulse mechanism from PDNA, applied to Transformer-based ASR.
 - Use layered git commits — one logical change per commit
 - Config-driven experiments: hyperparameters in `configs/`, not hardcoded
 - Tests mirror source structure: `src/pulse_whisper/models/foo.py` → `tests/test_foo.py`
+- **Never** include `Co-Authored-By` or any Claude/AI email in git commits
 
 ## Key Architecture (Variants A–E)
 - A: Baseline — Frozen Whisper (control)
