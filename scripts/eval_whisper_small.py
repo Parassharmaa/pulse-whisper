@@ -88,8 +88,10 @@ def train_gate(
     trainable = sum(p.numel() for p in gate.parameters())
     logger.info(f"Gate trainable params: {trainable:,}")
 
+    # GPU: use larger batch; CPU/MPS: smaller
+    train_batch = 32 if device.type == "cuda" else 8
     train_loader = get_10h_subset_dataloader(
-        whisper_size=whisper_size, batch_size=8,  # Smaller batch for larger model
+        whisper_size=whisper_size, batch_size=train_batch,
         gap_augmentation=False,
     )
     logger.info(f"Training batches: {len(train_loader)}")
@@ -127,7 +129,7 @@ def train_gate(
                     speech_mask[b] = 0.0
                     n_silence += 1
 
-            with torch.no_grad():
+            with torch.no_grad(), torch.amp.autocast(device.type, enabled=device.type == "cuda"):
                 encoder_out = whisper.model.encoder(input_features).last_hidden_state
 
             enc_len = encoder_out.shape[1]
@@ -224,7 +226,8 @@ def main():
     model.eval()
 
     processor = WhisperProcessor.from_pretrained(whisper_model_name)
-    test_loader = get_dataloader(split="test-clean", whisper_size=whisper_size, batch_size=4)
+    eval_batch = 16 if device.type == "cuda" else 4
+    test_loader = get_dataloader(split="test-clean", whisper_size=whisper_size, batch_size=eval_batch)
 
     # Soft gate WER
     logger.info("\nSoft gate WER:")
