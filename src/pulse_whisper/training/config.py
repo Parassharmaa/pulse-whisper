@@ -16,6 +16,8 @@ class ModelConfig:
     alpha_init: float = 0.01
     alpha_max: float | None = None  # clamp alpha to this max value (None = unconstrained)
     pulse_layers: str = "all"  # "all" or comma-separated layer indices
+    decoder_pulse: bool = False  # use decoder head pulse injection instead of encoder pulse
+    use_phase_net: bool = False  # state-dependent phase in pulse modules
 
 
 @dataclass
