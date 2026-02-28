@@ -42,7 +42,7 @@ class LibriSpeechDataset(Dataset):
         if split in split_map:
             hf_split, hf_config = split_map[split]
             self.dataset = load_dataset(
-                "librispeech_asr", hf_config, split=hf_split
+                "librispeech_asr", hf_config, split=hf_split,
             )
         else:
             raise ValueError(f"Unknown split: {split}. Use one of {list(split_map.keys())}")
