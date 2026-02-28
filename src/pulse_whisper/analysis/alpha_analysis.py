@@ -38,7 +38,13 @@ def extract_pulse_stats(model: nn.Module) -> list[PulseAnalysis]:
     if not hasattr(model, "injected_layers"):
         return results
 
-    for i, layer in enumerate(model.injected_layers):
+    # Support both ModuleDict (keyed by layer index str) and ModuleList
+    if hasattr(model.injected_layers, 'items'):
+        layer_items = [(int(k), v) for k, v in model.injected_layers.items()]
+    else:
+        layer_items = list(enumerate(model.injected_layers))
+
+    for i, layer in layer_items:
         if hasattr(layer, "alpha"):
             alpha = layer.alpha.item()
         else:

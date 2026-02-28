@@ -1,0 +1,26 @@
+model:
+  whisper_size: tiny
+  freeze_whisper: true
+  n_frequencies: 64
+  alpha_init: 0.01
+  alpha_max: 0.1              # same as medium constraint
+  pulse_layers: "2,3"         # only last 2 of 4 encoder layers (deeper layers showed higher alpha growth)
+
+training:
+  dataset: librispeech-10h
+  gap_augmentation: true
+  gap_fractions: [0.0, 0.05, 0.15]
+  batch_size: 16
+  lr: 5.0e-4                  # same as medium
+  max_epochs: 15
+  fp16: true
+  seed: 42
+  warmup_steps: 200
+
+logging:
+  log_every_n_steps: 10
+
+eval:
+  gap_levels: [0, 5, 15, 30, multi]
+  test_set: test-clean
+  hallucination_test: true

@@ -70,6 +70,12 @@ def train_variant(
     variant_dir = output_dir / variant.name
     variant_dir.mkdir(parents=True, exist_ok=True)
 
+    # Parse pulse_layers config
+    pulse_layer_indices = None
+    if config.model.pulse_layers != "all":
+        pulse_layer_indices = [int(x.strip()) for x in config.model.pulse_layers.split(",")]
+        logger.info(f"Selective injection: layers {pulse_layer_indices}")
+
     # Build model
     model = build_variant(
         variant=variant,
@@ -77,6 +83,7 @@ def train_variant(
         n_frequencies=config.model.n_frequencies,
         alpha_init=config.model.alpha_init,
         alpha_max=config.model.alpha_max,
+        pulse_layer_indices=pulse_layer_indices,
     )
 
     trainable = model.trainable_param_count()
@@ -151,6 +158,11 @@ def evaluate_variant(
 
     variant_dir = output_dir / variant.name
 
+    # Parse pulse_layers config
+    pulse_layer_indices = None
+    if config.model.pulse_layers != "all":
+        pulse_layer_indices = [int(x.strip()) for x in config.model.pulse_layers.split(",")]
+
     # Build model and load trained weights
     model = build_variant(
         variant=variant,
@@ -158,6 +170,7 @@ def evaluate_variant(
         n_frequencies=config.model.n_frequencies,
         alpha_init=config.model.alpha_init,
         alpha_max=config.model.alpha_max,
+        pulse_layer_indices=pulse_layer_indices,
     )
 
     if variant != Variant.A:
@@ -353,6 +366,8 @@ def main():
             "batch_size": config.training.batch_size,
             "lr": config.training.lr,
             "gap_augmentation": config.training.gap_augmentation,
+            "alpha_max": config.model.alpha_max,
+            "pulse_layers": config.model.pulse_layers,
         },
         "device": str(device),
         "training": [],

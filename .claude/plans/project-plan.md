@@ -89,6 +89,23 @@
   - Clean WER preserved at 0.076-0.077
 - **DECISION: PIVOT** — need medium constraint (alpha_max=0.1) or Whisper-Small
 
+### Task 8c: Phase 1.3c — Pivot Experiments ✅ NO-GO
+- **Configs:** `prototype_medium.yaml`, `prototype_selective.yaml`
+- **Blocked by:** Task 8
+- Three approaches tested to find sweet spot for pulse injection:
+- **1. Medium constraint (alpha_max=0.1, lr=5e-4, 15 epochs, all layers):**
+  - C: clean=0.080, multi_gap=0.249 (13.6% worse than baseline)
+  - D: clean=0.081, multi_gap=0.251 (14.7% worse)
+  - Alpha hit ceiling at ~0.107. Loss dropped (C: 2.74→2.61, D: 2.76→2.17) but WER degraded
+- **2. Selective injection (layers 2,3 only, alpha_max=0.1, lr=5e-4):**
+  - C: clean=0.075, multi_gap=0.246 (12.1% worse than baseline)
+  - D: clean=0.078, multi_gap=0.250 (14.0% worse)
+  - Selective slightly better than all-layers but still worse than baseline
+- **3. Whisper-Small:** NOT attempted — no basis, neither approach improved over baseline
+- **DECISION: NO-GO** — Pulse injection on frozen Whisper encoder does not improve gapped WER
+  at any tested alpha constraint or layer strategy. The mechanism appears fundamentally limited
+  by the frozen decoder dependency on unmodified encoder representations.
+
 ### Task 9: Phase 1.4 — Hallucination-specific testing ✅
 - **Script:** `scripts/run_phase1_hallucination.py`
 - **Blocked by:** Task 8
@@ -97,12 +114,13 @@
   - D (unconstrained): 83% on speech-with-pauses (slight reduction)
   - Pulse did not reduce hallucination in current form
 
-## Phase 2: Full Experiment (Conditional on GO)
-- Scale to Whisper-Small (12 encoder layers, 244M params)
-- 5 variants × 5 seeds = 25 runs on LibriSpeech-100h
-- Comprehensive eval: gapped, hallucination, noise robustness
-- Full statistical analysis + paper figures
-- ~125 hrs compute (~5 days on A4000)
+## Phase 2: Full Experiment — CANCELLED
+- Original plan: Scale to Whisper-Small, 5 variants × 5 seeds
+- **Cancelled:** Phase 1 pivot experiments showed pulse injection does not improve
+  gapped speech recognition on frozen Whisper. No basis for scaling up.
+- **Root cause:** Frozen decoder expects specific encoder representations; even small
+  perturbations (alpha=0.05-0.10) degrade WER. The pulse adds structured noise but
+  the decoder cannot leverage it without joint fine-tuning.
 
 ## Dependency Graph
 ```

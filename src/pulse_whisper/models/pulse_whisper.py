@@ -35,6 +35,7 @@ class PulseWhisperEncoder(nn.Module):
         n_frequencies: int = 64,
         alpha_init: float = 0.01,
         alpha_max: float | None = None,
+        pulse_layer_indices: list[int] | None = None,
     ) -> None:
         super().__init__()
         if isinstance(variant, str):
@@ -55,31 +56,37 @@ class PulseWhisperEncoder(nn.Module):
         for param in self.whisper.parameters():
             param.requires_grad = False
 
-        # Inject layers based on variant
-        self.injected_layers = nn.ModuleList()
+        # Determine which layers get injection
+        if pulse_layer_indices is None:
+            pulse_layer_indices = list(range(self.num_encoder_layers))
+        self.pulse_layer_indices = set(pulse_layer_indices)
+
+        # Inject layers based on variant (only at specified indices)
+        # Use ModuleDict keyed by layer index string for proper parameter registration
+        self.injected_layers = nn.ModuleDict()
         if variant == Variant.A:
             pass  # No injection — pure frozen baseline
         elif variant == Variant.B:
             from pulse_whisper.models.pulse_module import NoiseLayer
-            for _ in range(self.num_encoder_layers):
-                self.injected_layers.append(NoiseLayer(self.hidden_size, alpha_init))
+            for i in pulse_layer_indices:
+                self.injected_layers[str(i)] = NoiseLayer(self.hidden_size, alpha_init)
         elif variant == Variant.C:
             from pulse_whisper.models.pulse_module import PulseLayer
-            for _ in range(self.num_encoder_layers):
-                self.injected_layers.append(
-                    PulseLayer(self.hidden_size, n_frequencies, alpha_init, use_phase_net=False, alpha_max=alpha_max)
+            for i in pulse_layer_indices:
+                self.injected_layers[str(i)] = PulseLayer(
+                    self.hidden_size, n_frequencies, alpha_init, use_phase_net=False, alpha_max=alpha_max
                 )
         elif variant == Variant.D:
             from pulse_whisper.models.pulse_module import PulseLayer
-            for _ in range(self.num_encoder_layers):
-                self.injected_layers.append(
-                    PulseLayer(self.hidden_size, n_frequencies, alpha_init, use_phase_net=True, alpha_max=alpha_max)
+            for i in pulse_layer_indices:
+                self.injected_layers[str(i)] = PulseLayer(
+                    self.hidden_size, n_frequencies, alpha_init, use_phase_net=True, alpha_max=alpha_max
                 )
         elif variant == Variant.E:
             from pulse_whisper.models.pulse_module import PulseLayer
-            for _ in range(self.num_encoder_layers):
-                self.injected_layers.append(
-                    PulseLayer(self.hidden_size, n_frequencies, alpha_init, use_phase_net=True, alpha_max=alpha_max)
+            for i in pulse_layer_indices:
+                self.injected_layers[str(i)] = PulseLayer(
+                    self.hidden_size, n_frequencies, alpha_init, use_phase_net=True, alpha_max=alpha_max
                 )
 
     def get_encoder_with_pulse(self, input_features: torch.Tensor) -> torch.Tensor:
@@ -112,8 +119,8 @@ class PulseWhisperEncoder(nn.Module):
         for i, layer in enumerate(encoder.layers):
             hidden_states = layer(hidden_states, attention_mask=None)[0]
 
-            if self.variant != Variant.A and i < len(self.injected_layers):
-                hidden_states = self.injected_layers[i](hidden_states, time_steps)
+            if self.variant != Variant.A and str(i) in self.injected_layers:
+                hidden_states = self.injected_layers[str(i)](hidden_states, time_steps)
 
         hidden_states = encoder.layer_norm(hidden_states)
         return hidden_states
@@ -197,6 +204,7 @@ def build_variant(
     n_frequencies: int = 64,
     alpha_init: float = 0.01,
     alpha_max: float | None = None,
+    pulse_layer_indices: list[int] | None = None,
 ) -> PulseWhisperEncoder:
     """Factory to build a PulseWhisperEncoder for a given variant."""
     model_name = f"openai/whisper-{whisper_size}"
@@ -206,6 +214,7 @@ def build_variant(
         n_frequencies=n_frequencies,
         alpha_init=alpha_init,
         alpha_max=alpha_max,
+        pulse_layer_indices=pulse_layer_indices,
     )
 
 
